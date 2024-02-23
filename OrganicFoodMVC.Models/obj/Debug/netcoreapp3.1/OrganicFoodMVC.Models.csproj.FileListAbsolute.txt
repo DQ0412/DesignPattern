@@ -1,0 +1,10 @@
+D:\OganicFood\OrganicFoodMVC.Models\obj\Debug\netcoreapp3.1\OrganicFoodMVC.Models.csproj.AssemblyReference.cache
+D:\OganicFood\OrganicFoodMVC.Models\obj\Debug\netcoreapp3.1\OrganicFoodMVC.Models.GeneratedMSBuildEditorConfig.editorconfig
+D:\OganicFood\OrganicFoodMVC.Models\obj\Debug\netcoreapp3.1\OrganicFoodMVC.Models.AssemblyInfoInputs.cache
+D:\OganicFood\OrganicFoodMVC.Models\obj\Debug\netcoreapp3.1\OrganicFoodMVC.Models.AssemblyInfo.cs
+D:\OganicFood\OrganicFoodMVC.Models\obj\Debug\netcoreapp3.1\OrganicFoodMVC.Models.csproj.CoreCompileInputs.cache
+D:\OganicFood\OrganicFoodMVC.Models\bin\Debug\netcoreapp3.1\OrganicFoodMVC.Models.deps.json
+D:\OganicFood\OrganicFoodMVC.Models\bin\Debug\netcoreapp3.1\OrganicFoodMVC.Models.dll
+D:\OganicFood\OrganicFoodMVC.Models\bin\Debug\netcoreapp3.1\OrganicFoodMVC.Models.pdb
+D:\OganicFood\OrganicFoodMVC.Models\obj\Debug\netcoreapp3.1\OrganicFoodMVC.Models.dll
+D:\OganicFood\OrganicFoodMVC.Models\obj\Debug\netcoreapp3.1\OrganicFoodMVC.Models.pdb

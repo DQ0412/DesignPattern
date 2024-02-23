@@ -1,0 +1,359 @@
+﻿@model OrganicFoodMVC.Models.ViewModels.OrderDetailsVM
+@using OrganicFoodMVC.Utility
+@using Microsoft.Extensions.Options
+
+@inject IOptions<OrganicFoodMVC.Utility.StripeSettings> Stripe
+@{
+    ViewData["Title"] = "Chi tiết hóa đơn";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post">
+    <input hidden asp-for="orderHeader.Id" />
+    <br />
+    <div class="backgroundWhite container">
+        <div class="card">
+            <div class="card-header bg-dark text-light ml-0 row container">
+                <div class="col-12 d-none d-md-block col-md-6 pb-1">
+                    <i class="fas fa-shopping-cart"></i> &nbsp; Chi tiết hóa đơn
+                </div>
+                <div class="col-12 col-md-4 offset-md-2 text-right">
+                    <a asp-area="Admin" asp-controller="Order" asp-action="Index" class="btn btn-outline-info form-control btn-sm">Quay về danh sách hóa đơn</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="container rounded p-2">
+                    <div class="row">
+                        <div class="col-12 col-lg-6 pb-4">
+                            <div class="row">
+                                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-primary">Thông tin người đặt hàng:</span>
+                                </h4>
+                            </div>
+                            <div class="row my-1">
+                                <div class="col-3">Họ Tên</div>
+                                <div class="col-9">
+                                    @if (User.IsInRole(SD.Role_Employee) || User.IsInRole(SD.Role_Admin))
+                                    {
+                                        <input asp-for="orderHeader.Name" type="text" class="form-control" />
+                                        <span asp-validation-for="orderHeader.Name" class="text-danger"></span>
+                                    }
+                                    else
+                                    {
+                                        <input asp-for="orderHeader.Name" type="text" class="form-control" readonly />
+                                    }
+
+                                </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">Số điện thoại</div>
+                                    <div class="col-9">
+                                        @if (User.IsInRole(SD.Role_Employee) || User.IsInRole(SD.Role_Admin))
+                                        {
+                                            <input asp-for="orderHeader.PhoneNumber" type="text" class="form-control" />
+                                            <span asp-validation-for="orderHeader.PhoneNumber" class="text-danger"></span>
+                                        }
+                                        else
+                                        {
+                                            <input asp-for="orderHeader.PhoneNumber" type="text" class="form-control" readonly />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">Số nhà, đường, ấp</div>
+                                    <div class="col-9">
+                                        @if (User.IsInRole(SD.Role_Employee) || User.IsInRole(SD.Role_Admin))
+                                        {
+                                            <input asp-for="orderHeader.StreetAddress" type="text" class="form-control" />
+                                            <span asp-validation-for="orderHeader.StreetAddress" class="text-danger"></span>
+                                        }
+                                        else
+                                        {
+                                            <input asp-for="orderHeader.StreetAddress" type="text" class="form-control" readonly />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">Huyện</div>
+                                    <div class="col-9">
+                                        @if (User.IsInRole(SD.Role_Employee) || User.IsInRole(SD.Role_Admin))
+                                        {
+                                            <input asp-for="orderHeader.District" type="text" class="form-control" />
+                                            <span asp-validation-for="orderHeader.District" class="text-danger"></span>
+                                        }
+                                        else
+                                        {
+                                            <input asp-for="orderHeader.District" type="text" class="form-control" readonly />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">Thành Phố</div>
+                                    <div class="col-9">
+                                        @if (User.IsInRole(SD.Role_Employee) || User.IsInRole(SD.Role_Admin))
+                                        {
+                                            <input asp-for="orderHeader.City" type="text" class="form-control" />
+                                            <span asp-validation-for="orderHeader.City" class="text-danger"></span>
+                                        }
+                                        else
+                                        {
+                                            <input asp-for="orderHeader.City" type="text" class="form-control" readonly />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">Email</div>
+                                    <div class="col-9">
+                                        @if (User.IsInRole(SD.Role_Employee) || User.IsInRole(SD.Role_Admin))
+                                        {
+                                            <input asp-for="orderHeader.ApplicationUser.Email" type="text" class="form-control" />
+                                            <span asp-validation-for="orderHeader.ApplicationUser.Email" class="text-danger"></span>
+                                        }
+                                        else
+                                        {
+                                            <input asp-for="orderHeader.ApplicationUser.Email" type="text" class="form-control" readonly />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">Ngày đặt hàng</div>
+                                    <div class="col-9">
+
+                                        <input value="@Model.orderHeader.OrderDate.ToShortDateString()" type="text" class="form-control" readonly />
+
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">Đơn vị vận chuyển</div>
+                                    <div class="col-9">
+                                        @if (User.IsInRole(SD.Role_Employee) || User.IsInRole(SD.Role_Admin))
+                                        {
+                                            <input asp-for="orderHeader.Carrier" id="carrier" type="text" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input asp-for="orderHeader.Carrier" type="text" class="form-control" readonly />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">Mã vận chuyển</div>
+                                    <div class="col-9">
+                                        @if (User.IsInRole(SD.Role_Employee) || User.IsInRole(SD.Role_Admin))
+                                        {
+                                            <input asp-for="orderHeader.TrackingNumber" id="trackingNumber" type="text" class="form-control" />
+                                        }
+                                        else
+                                        {
+                                            <input asp-for="orderHeader.TrackingNumber" type="text" class="form-control" readonly />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="row my-1">
+                                    <div class="col-3">Ngày vận chuyển</div>
+                                    <div class="col-9">
+                                        <input value="@Model.orderHeader.ShippingDate.ToShortDateString()"
+                                               id="shippingDate" type="text" readonly class="form-control" />
+                                    </div>
+                                </div>
+                                @if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
+                                {
+                                    <div class="row my-1">
+                                        <div class="col-3">Mã giao dịch</div>
+                                        <div class="col-9">
+                                            <input asp-for="orderHeader.TransactionId" type="text" readonly class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class="row my-1">
+                                        @if (Model.orderHeader.TransactionId == null)
+                                        {
+                                            <div class="col-3">Ngày thanh toán</div>
+                                            <div class="col-9">
+                                                <input value="@Model.orderHeader.PaymentDueDate.ToShortDateString()"
+                                                       readonly type="text" class="form-control" />
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                    <div class="col-3">Ngày thanh toán</div>
+                                            <div class="col-9">
+                                                <input value="@Model.orderHeader.PaymentDate.ToShortDateString()"
+                                                       readonly id="paymentDate" type="text" class="form-control" />
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="row my-1">
+                                        <div class="col-3">Tình trạng</div>
+                                        <div class="col-9">
+                                            <input asp-for="orderHeader.PaymentStatus" type="text" readonly class="form-control" />
+                                        </div>
+                                    </div>
+                                    @if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
+                                    {
+                                        <input type="submit" value="Cập nhập thông tin" class="btn btn-warning form-control"
+                                               formaction="/Admin/Order/UpdateOrderDetails" formmethod="post" />
+                                    }
+                                }
+                            </div>
+                           
+                        <div class="col-12 col-lg-5 offset-lg-1">
+                            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-primary">Thông tin sản phẩm</span>
+                            </h4>
+                            <ul class="list-group mb-3">
+                                @foreach (var details in Model.orderDetails)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between p-2">
+                                        <div class="row container">
+                                            <div class="col-8">
+                                                <input type="hidden" asp-for="@details.Id" />
+                                                <h6 class="my-0 text-primary">@details.Product.Name</h6>
+                                                <small class="text-muted">Giá tiền : @details.Price</small><br />
+                                                <small class="text-muted">Số lượng : @details.Count</small>
+                                            </div>
+                                            <div class="col-4">
+                                                <p class="text-success">@((details.Count * details.Price).ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN")))</p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                }
+                                <li class="list-group-item bg-info">
+                                    <div class="row container">
+                                        <div class="col-6">
+                                            <h5 class="text-white">TỔNG TIỀN </h5>
+                                        </div>
+                                        <div class="col-6 text-right">
+                                            <h5 class="text-white">@(Model.orderHeader.OrderTotal.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN")))</h5>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+
+                            @if (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee))
+                            {
+                                <br />
+                                @if (Model.orderHeader.OrderStatus == SD.StatusApproved)
+                                {
+                                    <a asp-action="StartProcessing" asp-route-id="@Model.orderHeader.Id"
+                                        class="btn btn-primary form-control">Chấp nhận đơn hàng</a>
+                                }
+                                @if (Model.orderHeader.OrderStatus == SD.StatusInProcess)
+                                {
+                                    <input type="submit" value="Xác nhận đã giao hàng thành công" onclick="return validateInput()"
+                                            class="btn btn-primary form-control"
+                                            formaction="/Admin/Order/ShipOrder" formmethod="post" />
+                                }
+                            }
+                            else
+                            {
+                                <label class="btn btn-primary form-control">@Model.orderHeader.OrderStatus</label>
+                            }
+
+                            @{
+                                var OrderTotalForStripe = Model.orderHeader.OrderTotal * 100;
+                            }
+
+                            @if (Model.orderHeader.PaymentStatus == SD.PaymentStatusDelayedPayment &&
+                                Model.orderHeader.OrderStatus == SD.StatusShipped)
+                            {
+                                <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                                            data-key="@Stripe.Value.PublishableKey"
+                                        data-amount="@OrderTotalForStripe"
+                                        data-name="Organic Fruit"
+                                        data-label="Đặt Hàng"
+                                        data-description="Mua rau, củ, quả xanh tươi sạch."
+                                        data-locale="auto"
+                                        data-currency="vnd"
+                                        data-allow-remember-me="false"
+                                        data-image="https://stripe.com/img/documentation/checkout/marketplace.png">
+                                </script>
+                                <script>
+                                    document.getElementsByClassName("stripe-button-el")[0].style.display = 'none';
+                                </script>
+                                <button type="submit" value="Place Order" class="btn btn-success form-control">Thanh toán ngay</button>
+                            }
+
+
+                            @if (Model.orderHeader.OrderStatus != SD.StatusRefunded &&
+                            Model.orderHeader.OrderStatus != SD.StatusCancelled &&
+                            (User.IsInRole(SD.Role_Admin) || User.IsInRole(SD.Role_Employee)))
+                            {
+                                <div class="pt-2">
+                                    <a asp-action="CancelOrder" asp-route-id="@Model.orderHeader.Id"
+                                        class="btn btn-danger form-control">Hủy đơn hàng</a>
+                                </div>
+                            }
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function validateInput() {
+            var tracking = document.getElementById("trackingNumber").value;
+            var carrier = document.getElementById("carrier").value;
+            if (tracking.toString() == '') {
+                swal("Error", "Nhập mã vận chuyển", "error")
+                return false;
+            }
+            else {
+                if (carrier.toString() == '') {
+                    swal("Error", "Nhập tên đơn vị vận chuyển", "error")
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+        }
+        $(document).ready(function () {
+            var shippingDate = document.getElementById("shippingDate");
+            if (shippingDate.value == '1/1/0001') {
+                shippingDate.value = @DateTime.Now.AddDays(7).ToShortDateString();
+            }
+            var paymentDate = document.getElementById("paymentDate");
+            if (paymentDate.value == '1/1/0001') {
+                paymentDate.value = @DateTime.Now.AddDays(7).ToShortDateString();
+            }
+        });
+    </script>
+
+}
+<!--In the desolate village of Shadows Hollow, where the gray clouds perpetually shrouded the sky, lived two ill-fated souls named Evelyn and Edgar. Their lives were entwined by a curse that seemed to echo through the haunting whispers of the dense, fog-covered woods that surrounded their homes.
+
+Evelyn, a frail but kind-hearted girl, and Edgar, a brooding and mysterious young man, were deeply in love. However, a dark secret tainted their union — a centuries-old curse that condemned every firstborn child in their families to a life of perpetual suffering.
+
+Their families, blinded by generations of grief and despair, forbade the love between Evelyn and Edgar. The villagers believed that breaking the curse required the ultimate sacrifice — the death of one of the cursed lovers. Unbeknownst to the young couple, their union was seen as a desperate attempt to defy fate and break free from the relentless grip of the curse.
+
+As the villagers fueled the flames of superstition, Evelyn and Edgar clung to their love, determined to rewrite their tragic destiny. They ventured into the forbidden woods, guided by ancient whispers that promised a solution to their affliction.
+
+In the heart of the ominous forest, they discovered a dilapidated shrine where a grotesque figure, the embodiment of the curse itself, demanded a sacrifice. Terrified but resolute, Evelyn and Edgar faced an agonizing choice — to save their families from perpetual suffering, one of them must willingly embrace the cold embrace of death.
+
+In an anguished farewell, Evelyn offered herself as the sacrifice, her tearful eyes locking with Edgar's in a silent exchange of love and despair. The curse, momentarily appeased, unleashed a torrential storm that mirrored the tempest within their hearts.
+
+Edgar, left alone in the wake of the storm, carried the burden of the curse and the memory of his beloved Evelyn. Shadows Hollow, forever cloaked in sorrow, stood witness to a tragedy that transcended time, as the village's inhabitants whispered tales of the ill-fated lovers whose love was both their salvation and demise.
+
+Evelyn's sacrifice became a somber legend, a chilling reminder that love, in the cruel tapestry of Shadows Hollow, could be as destructive as it was beautiful. The cursed village, forever haunted by the echoes of a love lost to the ages, stood as a desolate monument to the tragic consequences of defying the cruel whims of destiny.
+
+Years passed, and the desolation that enshrouded Shadows Hollow intensified. The curse, though momentarily sated by Evelyn's sacrifice, continued to cast its ominous shadow over the village. The air was thick with grief, and the once-vibrant community dwindled into a ghostly existence.
+
+Edgar, burdened by guilt and the weight of his lost love, became a solitary figure, wandering the twisted paths of the woods that had claimed Evelyn. Each step he took echoed with the memories of their stolen moments together and the heart-wrenching decision that tore them apart.
+
+The villagers, gripped by fear and superstition, avoided Edgar, whispering that the very presence of the cursed lover could invoke the wrath of the malevolent force that had claimed Evelyn. Shadows Hollow became a place where time stood still, a purgatory for lost souls ensnared in the tendrils of an age-old curse.
+
+One fateful night, as the moon cast an eerie glow over the village, an ethereal figure emerged from the misty woods. It was Evelyn, but not as the villagers remembered her. She appeared as a spectral being, a manifestation of the curse's relentless hold on her soul.
+
+Driven by an otherworldly force, Evelyn's ghost sought out Edgar, her translucent form gliding through the darkened village. When she finally found him, their reunion was a bittersweet dance between the realms of the living and the dead. Edgar, tormented by grief and longing, was both captivated and horrified by the spectral presence of his lost love.
+
+As the ghostly couple embraced beneath the skeletal branches of the cursed woods, a haunting lament echoed through Shadows Hollow. The curse, sensing the undying connection between Evelyn and Edgar, intensified its grip on their entwined souls. The villagers, paralyzed by fear, watched the tragic reunion unfold with a mixture of sorrow and dread.
+
+In a final act of desperation, Edgar pleaded with the curse to release them from its malevolent grasp. The ghostly lovers, their figures intertwined like wisps of smoke, slowly dissipated into the night. The curse, momentarily appeased, loosened its grip on Shadows Hollow, leaving behind an emptiness that mirrored the hollowness in the hearts of those who remained.
+
+The once-vibrant village, now a mere shell of its former self, became a cautionary tale whispered by the wind through the twisted trees. Shadows Hollow stood as a testament to the devastating consequences of a love that defied the cruel whims of destiny — a love that, even in death, refused to be extinguished.-->
